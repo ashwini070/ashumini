@@ -1,12 +1,26 @@
-// server.js
-const express = require(`express`);
-const app = express();
-const port = 5000;
+const express = require("express");
+const path = require("path");
+const fs = require("fs");
 
-app.get(`/`, (req, res) => {
-  res.send(`Backend is running`);
+const app = express();
+const PORT = 3000;
+
+// Serve static files
+app.use(express.static(path.join(__dirname, "public")));
+
+// Debugging: Check if the file exists before serving
+app.get("/", (req, res) => {
+  const filePath = path.join(__dirname, "public", "index.html");
+  
+  console.log("Trying to serve:", filePath);
+  
+  if (fs.existsSync(filePath)) {
+    res.sendFile(filePath);
+  } else {
+    res.status(404).send("Error: index.html not found!");
+  }
 });
 
-app.listen(port, () => {
-  console.log(`Backend server running at http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`Frontend running at http://localhost:${PORT}`);
 });
